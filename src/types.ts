@@ -28,3 +28,15 @@ export type TimelinePlacement = {
   widthPercent: number;
   isVisible: boolean;
 };
+
+export type StatusFilter = 'all' | TournamentStatus;
+
+export type StatusMeta = {
+  label: string;
+  tone: string;
+};
+
+export type TimeMark = {
+  label: string;
+  leftPercent: number;
+};
