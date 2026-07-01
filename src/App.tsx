@@ -5,7 +5,7 @@ import TournamentDetailsModal from './components/TournamentDetailsModal';
 import { MINUTE_MS } from './constants/timeline';
 import tournamentsJson from './data/tournaments.json';
 import type { StatusFilter, Tournament } from './types';
-import { buildTimeMarks } from './utils/timeline';
+import { buildTimeMarks, getTimelineScrollHours } from './utils/timeline';
 import { filterTournaments, resolveTournamentStarts } from './utils/tournaments';
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
+  const timelineHours = getTimelineScrollHours(rangeHours);
 
   const resolvedStarts = useMemo(
     () => resolveTournamentStarts(tournaments, baseline),
@@ -36,8 +37,8 @@ function App() {
   }, [isPaused]);
 
   const timeMarks = useMemo(
-    () => buildTimeMarks(currentTime, rangeHours),
-    [currentTime, rangeHours],
+    () => buildTimeMarks(currentTime, rangeHours, timelineHours),
+    [currentTime, rangeHours, timelineHours],
   );
 
   const filteredTournaments = useMemo(() => {
@@ -78,6 +79,7 @@ function App() {
           baseline={baseline}
           currentTime={currentTime}
           rangeHours={rangeHours}
+          timelineHours={timelineHours}
           timeMarks={timeMarks}
           resolvedStarts={resolvedStarts}
           onSelectTournament={setSelectedTournament}

@@ -169,17 +169,21 @@ h1 {
   padding-bottom: 26px;
 }
 
+.timeline-content {
+  position: relative;
+  min-width: 900px;
+}
+
 .timeline-header,
 .track-row {
   display: grid;
-  grid-template-columns: minmax(900px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .timeline-header {
   position: sticky;
   top: 0;
   z-index: 5;
-  min-width: 900px;
   border-bottom: 1px solid var(--line-strong);
   background: rgba(15, 10, 22, 0.96);
   backdrop-filter: blur(14px);
@@ -188,7 +192,7 @@ h1 {
 .time-scale,
 .track-lane {
   position: relative;
-  min-width: 900px;
+  min-width: 100%;
 }
 
 .time-scale {
@@ -215,7 +219,7 @@ h1 {
 }
 
 .tracks {
-  min-width: 900px;
+  min-width: 100%;
 }
 
 .track-row {
@@ -242,7 +246,7 @@ h1 {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--now-offset);
+  left: var(--now-position, var(--now-offset));
   z-index: 8;
   width: 3px;
   background: var(--now);

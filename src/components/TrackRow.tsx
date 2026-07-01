@@ -7,6 +7,7 @@ type TrackRowProps = {
   startTime: number;
   currentTime: number;
   rangeHours: number;
+  timelineHours: number;
   timeMarks: TimeMark[];
   onSelectTournament: (tournament: Tournament) => void;
 };
@@ -16,10 +17,11 @@ function TrackRow({
   startTime,
   currentTime,
   rangeHours,
+  timelineHours,
   timeMarks,
   onSelectTournament,
 }: TrackRowProps) {
-  const placement = getPlacement(tournament, startTime, currentTime, rangeHours);
+  const placement = getPlacement(tournament, startTime, currentTime, rangeHours, timelineHours);
   const endTime = getTournamentEndTime(tournament, startTime);
 
   return (

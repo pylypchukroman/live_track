@@ -27,6 +27,7 @@ export type TimelinePlacement = {
   leftPercent: number;
   widthPercent: number;
   isVisible: boolean;
+  isClipped: boolean;
 };
 
 export type StatusFilter = 'all' | TournamentStatus;

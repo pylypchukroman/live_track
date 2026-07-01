@@ -30,6 +30,7 @@ function TournamentCard({
       style={{
         left: `${placement.leftPercent}%`,
         width: `${placement.widthPercent}%`,
+        minWidth: placement.isClipped ? 0 : undefined,
       }}
       onClick={() => onSelect(tournament)}
       aria-label={`Open details for ${tournament.name}`}
