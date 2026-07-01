@@ -43,16 +43,17 @@ export function buildTimeMarks(currentTime: number, rangeHours: number): TimeMar
   const visibleRangeMs = rangeHours * HOUR_MS;
   const futureWidthPercent = 100 - NOW_OFFSET_PERCENT;
   const pastRangeMs = (NOW_OFFSET_PERCENT / futureWidthPercent) * visibleRangeMs;
-  const futureMarks = Math.floor(visibleRangeMs / stepMs);
-  const pastMarks = Math.floor(pastRangeMs / stepMs);
+  const windowStart = currentTime - pastRangeMs;
+  const windowEnd = currentTime + visibleRangeMs;
+  const firstMark = Math.ceil(windowStart / stepMs) * stepMs;
+  const markCount = Math.floor((windowEnd - firstMark) / stepMs) + 1;
 
-  return Array.from({ length: pastMarks + futureMarks + 1 }, (_, index) => {
-    const stepIndex = index - pastMarks;
-    const value = currentTime + stepIndex * stepMs;
+  return Array.from({ length: markCount }, (_, index) => {
+    const value = firstMark + index * stepMs;
 
     return {
-      label: stepIndex === 0 ? '' : timeFormatter.format(value),
-      leftPercent: NOW_OFFSET_PERCENT + (stepIndex * stepMs * futureWidthPercent) / visibleRangeMs,
+      label: timeFormatter.format(value),
+      leftPercent: NOW_OFFSET_PERCENT + ((value - currentTime) * futureWidthPercent) / visibleRangeMs,
     };
   });
 }
