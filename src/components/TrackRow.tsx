@@ -27,6 +27,11 @@ function TrackRow({
 
   return (
     <article className="track-row">
+      <div className="track-info">
+        <span className="table-number">#{tournament.tableNumber}</span>
+        <span className="stakes-badge">{tournament.stakes}</span>
+      </div>
+
       <div className="track-lane">
         {timeMarks.map((mark) => (
           <span

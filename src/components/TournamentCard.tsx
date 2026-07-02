@@ -39,7 +39,9 @@ function TournamentCard({
     >
       <span className="card-title">{tournament.name}</span>
       <span className="card-meta">
-        <span aria-hidden="true">P</span>
+        <svg className="players-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-6 6.5A5.5 5.5 0 0 1 7.5 9h1a5.5 5.5 0 0 1 5.5 5.5v.5H2v-.5Z" />
+        </svg>
         {tournament.registeredPlayers}/{tournament.maxPlayers}
       </span>
       <span className={`status-pill status-${meta.tone}`}>{meta.label}</span>

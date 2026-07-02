@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ControlBar from './components/ControlBar';
 import TimelineBoard from './components/TimelineBoard';
 import TournamentDetailsModal from './components/TournamentDetailsModal';
+import { statusMeta } from './constants/status';
 import { MINUTE_MS } from './constants/timeline';
 import tournamentsJson from './data/tournaments.json';
 import type { StatusFilter, Tournament } from './types';
@@ -73,6 +74,15 @@ function App() {
             onPauseToggle={handlePauseToggle}
           />
         </header>
+
+        <div className="legend" aria-label="Status legend">
+          {Object.entries(statusMeta).map(([status, meta]) => (
+            <span className="legend-item" key={status}>
+              <i className={`legend-dot status-${meta.tone}`} aria-hidden="true" />
+              {meta.label}
+            </span>
+          ))}
+        </div>
 
         <TimelineBoard
           tournaments={filteredTournaments}

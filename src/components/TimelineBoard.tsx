@@ -1,5 +1,5 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
-import { NOW_OFFSET_PERCENT } from '../constants/timeline';
+import { INFO_COLUMN_PX, NOW_OFFSET_PERCENT } from '../constants/timeline';
 import type { TimeMark, Tournament } from '../types';
 import { getNowLinePercent, getTimelineContentWidthPercent } from '../utils/timeline';
 import TimelineHeader from './TimelineHeader';
@@ -32,7 +32,8 @@ function TimelineBoard({
   const contentWidthPercent = getTimelineContentWidthPercent(currentTime, rangeHours, timelineHours);
   const timelineStyle = {
     width: `${contentWidthPercent}%`,
-    '--now-position': `${nowLinePercent}%`,
+    '--info-col': `${INFO_COLUMN_PX}px`,
+    '--now-frac': String(nowLinePercent / 100),
   } as CSSProperties;
 
   nowLinePercentRef.current = nowLinePercent;
@@ -46,15 +47,21 @@ function TimelineBoard({
       return;
     }
 
-    const nowLineOffset = panel.scrollWidth * (nowLinePercentRef.current / 100);
-    const viewportOffset = panel.clientWidth * (NOW_OFFSET_PERCENT / 100);
-    panel.scrollLeft = Math.max(0, nowLineOffset - viewportOffset);
+    // Lanes start after the fixed info column, so the now-line offset is
+    // computed within the lane area only.
+    const laneWidth = panel.scrollWidth - INFO_COLUMN_PX;
+    const nowLineOffset = INFO_COLUMN_PX + laneWidth * (nowLinePercentRef.current / 100);
+    const viewportLaneWidth = panel.clientWidth - INFO_COLUMN_PX;
+    const viewportTarget = INFO_COLUMN_PX + viewportLaneWidth * (NOW_OFFSET_PERCENT / 100);
+    panel.scrollLeft = Math.max(0, nowLineOffset - viewportTarget);
   }, [rangeHours, timelineHours]);
 
   return (
     <section ref={panelRef} className="timeline-panel" aria-label="Tournament schedule timeline">
       <div className="timeline-content" style={timelineStyle}>
-        <div className="now-line" aria-hidden="true" />
+        <div className="now-line" aria-hidden="true">
+          <span>NOW</span>
+        </div>
 
         <TimelineHeader timeMarks={timeMarks} />
 

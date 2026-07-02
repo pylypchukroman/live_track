@@ -7,6 +7,7 @@ type TimelineHeaderProps = {
 function TimelineHeader({ timeMarks }: TimelineHeaderProps) {
   return (
     <div className="timeline-header">
+      <div className="header-corner">Table</div>
       <div className="time-scale">
         {timeMarks.map((mark) => (
           <div
