@@ -1,5 +1,5 @@
 import type { TimeMark, Tournament } from '../types';
-import { getPlacement, getTournamentEndTime } from '../utils/timeline';
+import { getEffectiveStatus, getPlacement, getTournamentEndTime } from '../utils/timeline';
 import TournamentCard from './TournamentCard';
 
 type TrackRowProps = {
@@ -23,6 +23,7 @@ function TrackRow({
 }: TrackRowProps) {
   const placement = getPlacement(tournament, startTime, currentTime, rangeHours, timelineHours);
   const endTime = getTournamentEndTime(tournament, startTime);
+  const status = getEffectiveStatus(tournament, startTime, currentTime);
 
   return (
     <article className="track-row">
@@ -37,6 +38,7 @@ function TrackRow({
 
         <TournamentCard
           tournament={tournament}
+          status={status}
           startTime={startTime}
           endTime={endTime}
           placement={placement}

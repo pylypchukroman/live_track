@@ -1,5 +1,5 @@
 import { HOUR_MS, MINUTE_MS, NOW_OFFSET_PERCENT, timeFormatter } from '../constants/timeline';
-import type { TimeMark, TimelinePlacement, Tournament } from '../types';
+import type { TimeMark, TimelinePlacement, Tournament, TournamentStatus } from '../types';
 
 export function parseStartTime(startTime: string, baseline: number) {
   const relativeMatch = startTime.match(/^(-?\d+)m$/);
@@ -72,17 +72,52 @@ export function getTimelineScrollHours(rangeHours: number) {
   return rangeHours === 3 ? 6 : rangeHours;
 }
 
-export function getNowLinePercent(rangeHours: number, scrollHours = rangeHours) {
-  const { pastRangeMs, totalRangeMs } = getTimelineWindow(0, rangeHours, scrollHours);
+export function getNowLinePercent(
+  currentTime: number,
+  rangeHours: number,
+  scrollHours = rangeHours,
+) {
+  const { pastRangeMs, totalRangeMs } = getTimelineWindow(currentTime, rangeHours, scrollHours);
 
   return (pastRangeMs / totalRangeMs) * 100;
 }
 
-export function getTimelineContentWidthPercent(rangeHours: number, scrollHours = rangeHours) {
-  const viewWindow = getTimelineWindow(0, rangeHours, rangeHours);
-  const scrollWindow = getTimelineWindow(0, rangeHours, scrollHours);
+export function getTimelineContentWidthPercent(
+  currentTime: number,
+  rangeHours: number,
+  scrollHours = rangeHours,
+) {
+  const { totalRangeMs } = getTimelineWindow(currentTime, rangeHours, scrollHours);
 
-  return (scrollWindow.totalRangeMs / viewWindow.totalRangeMs) * 100;
+  return (totalRangeMs / getViewportRangeMs(rangeHours)) * 100;
+}
+
+export function getEffectiveStatus(
+  tournament: Tournament,
+  startTime: number,
+  currentTime: number,
+): TournamentStatus {
+  const endTime = getTournamentEndTime(tournament, startTime);
+
+  if (currentTime >= endTime) {
+    return 'finished';
+  }
+
+  if (currentTime >= startTime) {
+    return tournament.status === 'final-table' ? 'final-table' : 'running';
+  }
+
+  const preStartStatuses: TournamentStatus[] = ['scheduled', 'registering', 'closing-soon'];
+
+  return preStartStatuses.includes(tournament.status) ? tournament.status : 'scheduled';
+}
+
+function getViewportRangeMs(rangeHours: number) {
+  const visibleRangeMs = rangeHours * HOUR_MS;
+  const futureWidthPercent = 100 - NOW_OFFSET_PERCENT;
+  const pastRangeMs = (NOW_OFFSET_PERCENT / futureWidthPercent) * visibleRangeMs;
+
+  return pastRangeMs + visibleRangeMs;
 }
 
 function getTimelineWindow(currentTime: number, rangeHours: number, scrollHours: number) {

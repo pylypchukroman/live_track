@@ -1,9 +1,10 @@
 import { statusMeta } from '../constants/status';
 import { timeFormatter } from '../constants/timeline';
-import type { TimelinePlacement, Tournament } from '../types';
+import type { TimelinePlacement, Tournament, TournamentStatus } from '../types';
 
 type TournamentCardProps = {
   tournament: Tournament;
+  status: TournamentStatus;
   startTime: number;
   endTime: number;
   placement: TimelinePlacement;
@@ -12,6 +13,7 @@ type TournamentCardProps = {
 
 function TournamentCard({
   tournament,
+  status,
   startTime,
   endTime,
   placement,
@@ -21,7 +23,7 @@ function TournamentCard({
     return null;
   }
 
-  const meta = statusMeta[tournament.status];
+  const meta = statusMeta[status];
 
   return (
     <button

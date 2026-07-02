@@ -1,12 +1,13 @@
 import { statusMeta } from '../constants/status';
-import type { Tournament } from '../types';
+import type { Tournament, TournamentStatus } from '../types';
 
 type TournamentDetailsModalProps = {
   tournament: Tournament;
+  status: TournamentStatus;
   onClose: () => void;
 };
 
-function TournamentDetailsModal({ tournament, onClose }: TournamentDetailsModalProps) {
+function TournamentDetailsModal({ tournament, status, onClose }: TournamentDetailsModalProps) {
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
       <section
@@ -26,7 +27,7 @@ function TournamentDetailsModal({ tournament, onClose }: TournamentDetailsModalP
           <span>Buy-in</span>
           <strong>{tournament.buyIn}</strong>
           <span>Status</span>
-          <strong>{statusMeta[tournament.status].label}</strong>
+          <strong>{statusMeta[status].label}</strong>
           <span>Players</span>
           <strong>
             {tournament.registeredPlayers}/{tournament.maxPlayers}

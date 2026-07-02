@@ -5,7 +5,7 @@ import TournamentDetailsModal from './components/TournamentDetailsModal';
 import { MINUTE_MS } from './constants/timeline';
 import tournamentsJson from './data/tournaments.json';
 import type { StatusFilter, Tournament } from './types';
-import { buildTimeMarks, getTimelineScrollHours } from './utils/timeline';
+import { buildTimeMarks, getEffectiveStatus, getTimelineScrollHours } from './utils/timeline';
 import { filterTournaments, resolveTournamentStarts } from './utils/tournaments';
 
 function App() {
@@ -42,8 +42,8 @@ function App() {
   );
 
   const filteredTournaments = useMemo(() => {
-    return filterTournaments(tournaments, query, statusFilter);
-  }, [query, statusFilter, tournaments]);
+    return filterTournaments(tournaments, query, statusFilter, resolvedStarts, currentTime);
+  }, [currentTime, query, resolvedStarts, statusFilter, tournaments]);
 
   function handlePauseToggle() {
     if (isPaused) {
@@ -89,6 +89,11 @@ function App() {
       {selectedTournament && (
         <TournamentDetailsModal
           tournament={selectedTournament}
+          status={getEffectiveStatus(
+            selectedTournament,
+            resolvedStarts.get(selectedTournament.id) ?? baseline,
+            currentTime,
+          )}
           onClose={() => setSelectedTournament(null)}
         />
       )}

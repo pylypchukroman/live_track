@@ -27,13 +27,18 @@ function TimelineBoard({
   onSelectTournament,
 }: TimelineBoardProps) {
   const panelRef = useRef<HTMLElement>(null);
-  const nowLinePercent = getNowLinePercent(rangeHours, timelineHours);
-  const contentWidthPercent = getTimelineContentWidthPercent(rangeHours, timelineHours);
+  const nowLinePercentRef = useRef(0);
+  const nowLinePercent = getNowLinePercent(currentTime, rangeHours, timelineHours);
+  const contentWidthPercent = getTimelineContentWidthPercent(currentTime, rangeHours, timelineHours);
   const timelineStyle = {
     width: `${contentWidthPercent}%`,
     '--now-position': `${nowLinePercent}%`,
   } as CSSProperties;
 
+  nowLinePercentRef.current = nowLinePercent;
+
+  // Realign scroll only when the range changes; per-minute ticks must not
+  // fight the user's manual scroll position.
   useEffect(() => {
     const panel = panelRef.current;
 
@@ -41,10 +46,10 @@ function TimelineBoard({
       return;
     }
 
-    const nowLineOffset = panel.scrollWidth * (nowLinePercent / 100);
+    const nowLineOffset = panel.scrollWidth * (nowLinePercentRef.current / 100);
     const viewportOffset = panel.clientWidth * (NOW_OFFSET_PERCENT / 100);
     panel.scrollLeft = Math.max(0, nowLineOffset - viewportOffset);
-  }, [nowLinePercent, rangeHours, timelineHours]);
+  }, [rangeHours, timelineHours]);
 
   return (
     <section ref={panelRef} className="timeline-panel" aria-label="Tournament schedule timeline">
